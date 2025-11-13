@@ -6,11 +6,11 @@ class NoteInputDialog extends StatelessWidget {
   final Function() onSave;
 
   const NoteInputDialog({
-    Key? key,
+    super.key,
     required this.controller,
     required this.isEditing,
     required this.onSave,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,16 +28,16 @@ class NoteInputDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'),
           style: TextButton.styleFrom(foregroundColor: Colors.grey),
+          child: Text('Cancel'),
         ),
         TextButton(
           onPressed: () {
             onSave();
             Navigator.pop(context);
           },
-          child: Text('Save'),
           style: TextButton.styleFrom(foregroundColor: Colors.blue),
+          child: Text('Save'),
         ),
       ],
     );

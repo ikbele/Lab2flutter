@@ -1,3 +1,16 @@
+import org.gradle.api.tasks.Delete
+import org.gradle.kotlin.dsl.*
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")
+    }
+}
 allprojects {
     repositories {
         google()
@@ -22,3 +35,5 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+

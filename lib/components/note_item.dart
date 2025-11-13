@@ -6,11 +6,11 @@ class NoteItem extends StatelessWidget {
   final Function(String) onDelete;
 
   const NoteItem({
-    Key? key,
+    super.key,
     required this.note,
     required this.onEdit,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

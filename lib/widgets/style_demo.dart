@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:appwrite/models.dart';
+import '../services/note_service.dart';
 class StyleDemo extends StatelessWidget {
+  const StyleDemo({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
