@@ -5,6 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Client getClient() {
   Client client = Client();
   return client
-    .setEndpoint(dotenv.env['APPWRITE_ENDPOINT']!)
-    .setProject(dotenv.env['APPWRITE_PROJECT_ID']!);
+    .setEndpoint(dotenv.env['https://nyc.cloud.appwrite.io/v1']!)
+    .setProject(dotenv.env['692637f80020222ffb5c']!);
 }

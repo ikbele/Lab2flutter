@@ -1,3 +1,4 @@
+// lib/services/database_service.dart
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,8 +19,8 @@ class DatabaseService {
     try {
       // Fetch documents from the specified database and collection
       final response = await _databases.listDocuments(
-        databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
-        collectionId: dotenv.env['APPWRITE_COLLECTION_ID']!,
+        databaseId: dotenv.env['6926385b000759e8b0c0']!,
+        collectionId: dotenv.env['notes']!,
         queries: queries,
       );
       // Return the documents list from the response
@@ -27,7 +28,7 @@ class DatabaseService {
     } catch (e) {
       // Log and rethrow any errors
       print('Error listing documents: $e');
-      rethrow;
+      throw e;
     }
   }
 }

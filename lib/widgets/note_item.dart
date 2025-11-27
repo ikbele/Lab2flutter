@@ -8,10 +8,10 @@ class NoteItem extends StatefulWidget {
   final Function(String)? onNoteDeleted;
 
   const NoteItem({
-    super.key,
+    Key? key,
     required this.note,
     this.onNoteDeleted,
-  });
+  }) : super(key: key);
 
   @override
   _NoteItemState createState() => _NoteItemState();

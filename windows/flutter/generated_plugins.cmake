@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  flutter_web_auth_2
   url_launcher_windows
   window_to_front
 )

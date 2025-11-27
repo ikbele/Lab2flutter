@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:appwrite/models.dart';
-import '../services/note_service.dart';
+
 class StyleDemo extends StatelessWidget {
   const StyleDemo({super.key});
 
@@ -16,6 +15,7 @@ class StyleDemo extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
+                
                 color: Colors.black.withOpacity(0.25),
                 spreadRadius: 2,
                 blurRadius: 3.84,

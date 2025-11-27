@@ -1,11 +1,14 @@
+// lib/screens/notes_screen.dart
 import 'package:flutter/material.dart';
 import 'package:appwrite/models.dart';
+import 'package:provider/provider.dart';
 import '../services/note_service.dart';
 import '../widgets/note_item.dart';
 import '../widgets/add_note_modal.dart';
+import '../providers/auth_provider.dart';
 
 class NotesScreen extends StatefulWidget {
-  const NotesScreen({super.key});
+  const NotesScreen({Key? key}) : super(key: key);
 
   @override
   _NotesScreenState createState() => _NotesScreenState();
@@ -23,15 +26,26 @@ class _NotesScreenState extends State<NotesScreen> {
     _fetchNotes();
   }
 
-  // Fetch notes from Appwrite
+  // Function to fetch notes from the database
   Future<void> _fetchNotes() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (authProvider.user == null) {
+      setState(() {
+        _isLoading = false;
+        _notes = [];
+      });
+      return;
+    }
+
     try {
       setState(() {
         _isLoading = true;
         _error = null;
       });
 
-      final fetchedNotes = await _noteService.getNotes();
+      // Pass the user ID when fetching notes
+      final fetchedNotes =
+          await _noteService.getNotes(userId: authProvider.user!.$id);
 
       setState(() {
         _notes = fetchedNotes;
@@ -46,7 +60,7 @@ class _NotesScreenState extends State<NotesScreen> {
     }
   }
 
-  // Show modal to add a new note
+  // Show the add note dialog
   void _showAddNoteDialog() {
     showDialog(
       context: context,
@@ -56,8 +70,9 @@ class _NotesScreenState extends State<NotesScreen> {
     );
   }
 
-  // Add the new note locally after adding
+  // Add the new note to the state and avoid refetching
   void _handleNoteAdded(Map<String, dynamic> noteData) {
+    // Create a temporary Document object
     final newNote = Document(
       $id: noteData['\$id'] ?? 'temp-id',
       $collectionId: 'notes',
@@ -73,11 +88,36 @@ class _NotesScreenState extends State<NotesScreen> {
     });
   }
 
-  // Handle note deletion locally
   void _handleNoteDeleted(String noteId) {
     setState(() {
       _notes = _notes.where((note) => note.$id != noteId).toList();
     });
+  }
+
+  Widget _buildEmptyNotesView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "You don't have any notes yet.",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "Tap the + button to create your first note!",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -110,37 +150,42 @@ class _NotesScreenState extends State<NotesScreen> {
 
             // Show loading indicator
             if (_isLoading && _notes.isEmpty)
-              const Expanded(child: Center(child: CircularProgressIndicator())),
+              const Center(child: CircularProgressIndicator()),
 
             // Show error message
             if (_error != null && _notes.isEmpty)
-              Expanded(
-                child: Center(
-                  child: Text(
-                    _error!,
-                    style: const TextStyle(color: Colors.red, fontSize: 16),
-                  ),
+              Center(
+                child: Text(
+                  _error!,
+                  style: const TextStyle(color: Colors.red, fontSize: 16),
                 ),
               ),
 
-            // Show the notes list
+            // Show notes list OR empty state
             if (!_isLoading || _notes.isNotEmpty)
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _fetchNotes,
-                  child: ListView.builder(
-                    itemCount: _notes.length,
-                    itemBuilder: (context, index) {
-                      return NoteItem(
-                        note: _notes[index],
-                        onNoteDeleted: _handleNoteDeleted,
-                      );
-                    },
-                  ),
+                  child: _notes.isEmpty
+                      ? _buildEmptyNotesView()
+                      : ListView.builder(
+                          itemCount: _notes.length,
+                          itemBuilder: (context, index) {
+                            return NoteItem(
+                              note: _notes[index],
+                              onNoteDeleted: _handleNoteDeleted,
+                            );
+                          },
+                        ),
                 ),
               ),
           ],
         ),
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: _showAddNoteDialog,
       ),
     );
   }
